@@ -1,0 +1,6 @@
+.gradle
+.settings
+.idea
+.project
+build/
+core.env
