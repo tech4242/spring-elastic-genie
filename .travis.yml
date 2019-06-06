@@ -4,5 +4,3 @@ jdk:
 branches:
   only:
     - master
-script:
-  - gradle build
