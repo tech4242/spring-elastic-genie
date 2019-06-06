@@ -1,6 +1,6 @@
 # spring-elastic-genie
 
-##Intro
+## Intro
 
 This project will showcase how to use Elasticsearch and Kibana with Spring Boot.
 
