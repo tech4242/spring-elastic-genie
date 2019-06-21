@@ -4,7 +4,7 @@
 
 ## Intro
 
-This project will showcase how to use Elasticsearch and Kibana with Spring Boot.
+This project will showcase how to use Elasticsearch and Kibana with Spring Boot. You can add movies fetched from OMDB to your PostgreSQL database through a simple CRUD REST interface, which will in turn be indexed by Elasticsearch. Once indexed, you can visualize your data with Kibana.
 
 ## Local build with gradle
 
