@@ -4,3 +4,4 @@
 .project
 build/
 core.env
+.DS_Store
