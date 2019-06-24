@@ -9,6 +9,9 @@ import org.springframework.web.client.RestTemplate;
 import springelasticgenie.model.Movie;
 import springelasticgenie.repository.MovieRepository;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 @Controller
 @RequestMapping(path="/movie")
 public class MovieController {
@@ -23,14 +26,25 @@ public class MovieController {
     public @ResponseBody String addNewMovie(@RequestParam String movieName) {
         String omdbURL = String.format("http://www.omdbapi.com/?apikey=%s&s=%s",omdbKey, movieName);
         RestTemplate omdbTemplate = new RestTemplate();
-        String omdbResult = omdbTemplate.getForObject(omdbURL, String.class);
-        System.out.println(omdbResult);
+        Map<String, ArrayList<Map<String, String>>> omdbTemplateResult = omdbTemplate.getForObject(omdbURL, Map.class);
 
-        Movie movie = new Movie();
-        movie.setName(movieName);
-        movieRepository.save(movie);
-
-        return "Saved";
+        try {
+            ArrayList<Map<String, String>> omdbMovies = omdbTemplateResult.get("Search");
+            for(int i = 0; i < omdbMovies.size(); i++) {
+                Map<String, String> omdbMovie = omdbMovies.get(i);
+                Movie movie = new Movie();
+                movie.setTitle(omdbMovie.get("Title"));
+                movie.setImdbId(omdbMovie.get("imdbID"));
+                movie.setPoster(omdbMovie.get("Poster"));
+                movie.setYear(omdbMovie.get("Year"));
+                movie.setType(omdbMovie.get("Type"));
+                movieRepository.save(movie);
+            }
+            return "Success";
+        } catch(Exception e) {
+            System.out.println(e.toString());
+            return "Error";
+        }
     }
 
     @GetMapping(path="/all")

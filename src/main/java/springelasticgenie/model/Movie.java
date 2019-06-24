@@ -10,22 +10,29 @@ public class Movie {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;
+    private String title;
+    private Integer year;
+    private String imdbId;
+    private String type;
+    private String poster;
 
-    private String name;
-
-    public Integer getId() {
-        return id;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setYear(String year) {
+        this.year = Integer.parseInt(year);
     }
 
-    public String getName() {
-        return name;
+    public void setImdbId(String imdbId) {
+        this.imdbId = imdbId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setPoster(String poster) {
+        this.poster = poster;
     }
 }
