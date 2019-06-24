@@ -3,6 +3,9 @@ package springelasticgenie.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -23,7 +26,7 @@ public class MovieController {
     private String omdbKey;
 
     @PostMapping(path="/add")
-    public @ResponseBody String addNewMovie(@RequestParam String movieName) {
+    public ResponseEntity<?> addNewMovie(@RequestParam String movieName) {
         String omdbURL = String.format("http://www.omdbapi.com/?apikey=%s&s=%s",omdbKey, movieName);
         RestTemplate omdbTemplate = new RestTemplate();
         Map<String, ArrayList<Map<String, String>>> omdbTemplateResult = omdbTemplate.getForObject(omdbURL, Map.class);
@@ -40,10 +43,14 @@ public class MovieController {
                 movie.setType(omdbMovie.get("Type"));
                 movieRepository.save(movie);
             }
-            return "Success";
+            // TODO add response body
+            HttpHeaders headers = new HttpHeaders();
+            return new ResponseEntity<>(headers, HttpStatus.CREATED);
         } catch(Exception e) {
             System.out.println(e.toString());
-            return "Error";
+            // TODO add response body
+            HttpHeaders headers = new HttpHeaders();
+            return new ResponseEntity<>(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
