@@ -15,6 +15,20 @@ This project will showcase how to use Elasticsearch and Kibana with Spring Boot.
 ## Docker build
 
 ```bash
+./gradlew build
 docker-compose build
 docker-compose up
+```
+
+## Using the API
+
+Here is how you can use the app. This POST request will send a search query to OMDB's API and save the movies in your local PostgreSQL DB, which can in turn be indexed by Elasticsearch.
+
+```bash
+curl -X POST \
+  http://localhost:8080/movie/add \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "search": "Rush Hour 3"
+}'
 ```

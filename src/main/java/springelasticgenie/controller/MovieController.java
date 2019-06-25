@@ -24,17 +24,19 @@ public class MovieController {
 
     @Value("${OMDB_API_KEY}")
     private String omdbKey;
-
+    
     @PostMapping(path="/add")
-    public ResponseEntity<?> addNewMovie(@RequestParam String movieName) {
-        String omdbURL = String.format("http://www.omdbapi.com/?apikey=%s&s=%s",omdbKey, movieName);
+    public ResponseEntity<?> addNewMovie(@RequestBody Map<String, ?> movieSearchParams) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/json; charset=UTF-8");
+
+        String omdbURL = String.format("http://www.omdbapi.com/?apikey=%s&s=%s",omdbKey, movieSearchParams.get("search"));
         RestTemplate omdbTemplate = new RestTemplate();
         Map<String, ArrayList<Map<String, String>>> omdbTemplateResult = omdbTemplate.getForObject(omdbURL, Map.class);
 
         try {
             ArrayList<Map<String, String>> omdbMovies = omdbTemplateResult.get("Search");
-            for(int i = 0; i < omdbMovies.size(); i++) {
-                Map<String, String> omdbMovie = omdbMovies.get(i);
+            for (Map<String, String> omdbMovie : omdbMovies) {
                 Movie movie = new Movie();
                 movie.setTitle(omdbMovie.get("Title"));
                 movie.setImdbId(omdbMovie.get("imdbID"));
@@ -43,14 +45,9 @@ public class MovieController {
                 movie.setType(omdbMovie.get("Type"));
                 movieRepository.save(movie);
             }
-            // TODO add response body
-            HttpHeaders headers = new HttpHeaders();
-            return new ResponseEntity<>(headers, HttpStatus.CREATED);
+            return new ResponseEntity<>("Success", headers, HttpStatus.CREATED);
         } catch(Exception e) {
-            System.out.println(e.toString());
-            // TODO add response body
-            HttpHeaders headers = new HttpHeaders();
-            return new ResponseEntity<>(headers, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Error", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
