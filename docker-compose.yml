@@ -1,6 +1,7 @@
 version: '2.1'
 
 services:
+
   app:
     build: .
     #volumes:
@@ -32,19 +33,55 @@ services:
 
   # running on a single node for development.
   # prod settings here: https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#docker-cli-run-prod-mode
-  elastic:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.0.0
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.2.0
     volumes:
       - 'es_data:/usr/share/elasticsearch/data'
     ports:
       - "9200:9200"
       - "9300:9300"
     environment:
+      - bootstrap.memory_lock=true
+      - cluster.name=springelasticgenie
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - "discovery.type=single-node"
     ulimits:
       memlock:
         soft: -1
         hard: -1
+
+  elastichq:
+    image: elastichq/elasticsearch-hq
+    ports:
+      - "5000:5000"
+    links:
+      - elasticsearch
+    depends_on:
+      - elasticsearch
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.2.0
+    volumes:
+      - ./logstash/config-dir:/usr/share/logstash/config-dir
+      - ./logstash/drivers/:/usr/share/logstash/drivers
+    command: logstash -f /usr/share/logstash/config-dir/logstash.conf
+    env_file:
+      - core.env
+    links:
+      - elasticsearch
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.2.0
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEACH_URL=http://elasticsearch:9200
+    links:
+      - elasticsearch
+    depends_on:
+      - elasticsearch
 
 volumes:
   postgres_data:

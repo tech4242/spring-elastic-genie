@@ -24,7 +24,7 @@ public class MovieController {
 
     @Value("${OMDB_API_KEY}")
     private String omdbKey;
-    
+
     @PostMapping(path="/add")
     public ResponseEntity<?> addNewMovie(@RequestBody Map<String, ?> movieSearchParams) {
         HttpHeaders headers = new HttpHeaders();

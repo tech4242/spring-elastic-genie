@@ -5,6 +5,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+//import org.springframework.data.elasticsearch.annotations.Document;
+//@Document(indexName = "springelasticgenie", type = "movie")
+
 @Entity
 public class Movie {
     @Id
