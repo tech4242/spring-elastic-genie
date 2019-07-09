@@ -60,7 +60,7 @@ services:
       - elasticsearch
 
   logstash:
-    image: docker.elastic.co/logstash/logstash:7.2.0
+    image: docker.elastic.co/logstash/logstash:7.0.0
     volumes:
       - ./logstash/config-dir:/usr/share/logstash/config-dir
       - ./logstash/drivers/:/usr/share/logstash/drivers
